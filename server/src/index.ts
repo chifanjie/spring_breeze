@@ -1,8 +1,8 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import dotenv from 'dotenv';
 import cron from 'node-cron';
 
 import { prisma } from './db.js';
@@ -12,7 +12,6 @@ import settingsRouter from './routes/settings.js';
 import notificationsRouter from './routes/notifications.js';
 import { runHotspotCheck } from './jobs/hotspotChecker.js';
 
-dotenv.config();
 
 const app = express();
 const httpServer = createServer(app);
@@ -82,10 +81,12 @@ export { io };
 
 const PORT = process.env.PORT || 3001;
 
-httpServer.listen(PORT, () => {
+const HOST = process.env.HOST || '127.0.0.1';
+
+httpServer.listen(Number(PORT), HOST, () => {
   console.log(`
   🔥 热点监控服务启动成功!
-  📡 Server running on http://localhost:${PORT}
+  📡 Server running on http://${HOST}:${PORT}
   🔌 WebSocket ready
   ⏰ Hotspot check scheduled every 30 minutes
   `);
